@@ -1,0 +1,68 @@
+#!/bin/sh
+
+
+# Quick start-stop-daemon example, derived from Debian /etc/init.d/ssh
+set -e
+# Must be a valid filename
+NAME=ocm
+#This is the command to be run, give the full pathname
+touch /var/run/$NAME.pid
+chmod 777 /var/run/$NAME.pid
+
+
+case "$1" in
+  start)
+        echo -n "Starting daemon: "$NAME
+     
+	nohup java -jar /usr/src/ocm/ocm.jar > debug_ocm.txt &
+
+        ps -ef | grep  "java -jar /usr/src/ocm/ocm.jar" | grep -v grep | grep -v KEYWORD | awk '{print $2}' > /var/run/$NAME.pid
+
+        echo "."
+        ;;
+  stop)
+        echo -n "Stopping daemon: "$NAME
+        echo "."
+        value=$(cat /var/run/$NAME.pid)
+        rm -f /var/run/$NAME.pid
+
+        if [ "$value" != "" ]; then
+                kill -9 $value
+        fi
+
+        if ps -ef | grep "java -jar /usr/src/ocm/ocm.jar" | grep -v grep > /dev/null
+        then
+                kill -9 $value
+        fi
+
+        ;;
+  restart)
+
+        value=$(cat /var/run/$NAME.pid)
+        rm -f /var/run/$NAME.pid
+
+        if [ "$value" != "" ]; then
+                kill -9 $value
+        fi
+
+        if ps -ef | grep "java -jar /usr/src/ocm/ocm.jar" | grep -v grep > /dev/null
+        then
+                kill -9 $value
+        fi
+
+      
+	nohup java -jar /usr/src/ocm/ocm.jar > debug_ocm.txt &
+
+
+
+        ps -ef | grep  "java -jar /usr/src/ocm/ocm.jar" | grep -v grep | grep -v KEYWORD | awk '{print $2}' > /var/run/$NAME.pid
+
+
+        ;;
+
+  *)
+        echo "Usage: "$1" {start|stop|restart}"
+        exit 1
+esac
+
+exit 0

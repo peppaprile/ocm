@@ -1,0 +1,6 @@
+1.0.6 all sites fixed minor bug
+1.0.5 all sites
+1.0.5 itctapx1f,e and ocm service changed (version debug) -> seems to work fine
+1.0.4 all sites
+1.0.4 ready to be deployed on all servers.
+1.0.3 all sites.
